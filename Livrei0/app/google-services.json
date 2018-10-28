@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "695068761160",
+    "firebase_url": "https://livrei0-2e715.firebaseio.com",
+    "project_id": "livrei0-2e715",
+    "storage_bucket": "livrei0-2e715.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695068761160:android:cd3d464631aa24df",
+        "android_client_info": {
+          "package_name": "com.jd.livrei0"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "695068761160-duc322n0oh8f1l3nfcmfro7fh7osjd8l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jd.livrei0",
+            "certificate_hash": "ec8f361587208ccc70b2936f541ea581d036451a"
+          }
+        },
+        {
+          "client_id": "695068761160-3kahj0c5ahk7cab0qfbdetvb41l5e18o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJTScqED9v4s398EkIdafMNzYooW7O6N4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "695068761160-3kahj0c5ahk7cab0qfbdetvb41l5e18o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
