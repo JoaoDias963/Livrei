@@ -8,19 +8,24 @@ public class TrocasObject {
     private String imgUrlPerfil;
     private String nome;
     private String status;
+    private String idTroca;
 
 
-    public TrocasObject(String userId, String nome, String imgUrlPerfil, String imgUrlLivro, String titulo, String status){
+    public TrocasObject(String userId, String nome, String imgUrlPerfil, String imgUrlLivro, String titulo, String status, String idTroca){
         this.setUserId(userId);
         this.setNome(nome);
         this.setImgUrlPerfil(imgUrlPerfil);
         this.setImgUrlLivro(imgUrlLivro);
         this.setTitulo(titulo);
         this.setStatus(status);
+        this.setIdTroca(idTroca);
 
     }
 
-
+    public String setIdTroca(String idTroca) {
+        return this.idTroca = idTroca;
+    }
+    public String getIdTroca() { return idTroca;}
     public String getUserId() {
         return userId;
     }

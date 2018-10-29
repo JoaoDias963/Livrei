@@ -9,7 +9,8 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@id/sendLayout">
 
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
@@ -21,13 +22,14 @@
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.NestedScrollView>
     <LinearLayout
+        android:id="@+id/sendLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         >
         <EditText
-            android:layout_weight="0.7"
+            android:layout_weight="0.8"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Mensagem..."

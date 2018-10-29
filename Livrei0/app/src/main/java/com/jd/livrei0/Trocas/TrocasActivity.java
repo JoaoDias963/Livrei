@@ -91,6 +91,7 @@ public class TrocasActivity extends AppCompatActivity {
                             String imagemPerfil = "";
                             String titulo = "";
                             String status = "";
+                            String idTroca = "";
                             if (dataSnapshot.child("Nome").getKey() != null) {
                                 nome = dataSnapshot.child("Nome").getValue().toString();
 
@@ -110,9 +111,13 @@ public class TrocasActivity extends AppCompatActivity {
                             if (dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getKey() != null) {
                                 status = dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getValue().toString();
                             }
+                            if (dataSnapshot.child("Trocas").child(usuarioAtual).getKey() != null){
+                                //IDTROCA FORMADO PELO ID DO USUARIO + CHATID
+                                idTroca = dataSnapshot.child("Trocas").child(usuarioAtual).child("ChatId").getValue().toString();
+                            }
 
 
-                            TrocasObject objetoTroca = new TrocasObject(userId, nome, imagemPerfil, imagemLivro, titulo, status);
+                            TrocasObject objetoTroca = new TrocasObject(userId, nome, imagemPerfil, imagemLivro, titulo, status, idTroca);
                             resultTrocas.add(objetoTroca);
                             mTrocasAdapter.notifyDataSetChanged();
                         }

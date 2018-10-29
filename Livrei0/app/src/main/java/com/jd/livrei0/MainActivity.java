@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         private Button sair;
 
         private FirebaseAuth mFirebaseAuth;
-        private DatabaseReference mUsuarioDb;
+        private DatabaseReference mUsuarioDb , mChatDb;
 
         ListView listView;
         List<CardAdapter> rowLivros;
@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_main);
 
             mUsuarioDb = FirebaseDatabase.getInstance().getReference().child("Usuarios");
+            mChatDb = FirebaseDatabase.getInstance().getReference().child("Chat");
             mFirebaseAuth = FirebaseAuth.getInstance();
 
             sair = (Button) findViewById(R.id.btnSair);
@@ -146,11 +147,15 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                 if (dataSnapshot.exists()) {
+                                    //chatId formado por userId troca+ usuario atual +chatID.push
+                                    String chatId = userId + dataSnapshot.getKey() + FirebaseDatabase.getInstance().getReference().child("Chat").push().getKey();
 
-                                    String chatId = FirebaseDatabase.getInstance().getReference().child("Chat").push().getKey();
+                                    // salvar chatId no "chat" -> child(USUARIO DA TROCA PARA RETORNAR NO CHAT ACTIVITY)
+                                    mChatDb.child(chatId).child("UsuarioDaTroca").setValue(userId);
+
                                     //referencia o usuario encontrado e seta a troca nele
                                     //idTroca
-                                    //String idTroca = mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").push().getKey();
+
                                     //mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").child(idTroca).child(userId).setValue(true);
                                     mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").child(userId).child("ChatId").setValue(chatId);
                                     mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").child(userId).child("Status").setValue("Pendente");
@@ -192,14 +197,16 @@ public class MainActivity extends AppCompatActivity {
                 //se a chave usuario for diferente do logado && se usuario atual já não foi registrado no interessa ou nao interessa
                 if (dataSnapshot.exists() && dataSnapshot.child("Doacao").exists() && !dataSnapshot.getKey().equals(mFirebaseAuth.getCurrentUser().getUid() ) && (!dataSnapshot.child("NaoInteressa").hasChild(mFirebaseAuth.getCurrentUser().getUid()))) {
 
+                        //testa se o livro n está em troca pendente
+                        if (!dataSnapshot.child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).exists() ) {
 
-                        //dataSnapshot.getKey() aqui acessa primeiro filho após "Usuarios" no banco trazendo o UId
-                        //dataSnapshot.child("Doacao") acessa o valor de qualquer filho depois do UId com "Doacao"
-                        //trocar "urlFotoPerfil" por "urlFotoLivro"
-                        CardAdapter livro = new CardAdapter(dataSnapshot.getKey(), dataSnapshot.child("Doacao").child("titulo").getValue().toString(), dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getValue().toString());
-                        rowLivros.add(livro);
-                        arrayAdapter.notifyDataSetChanged();
-
+                            //dataSnapshot.getKey() aqui acessa primeiro filho após "Usuarios" no banco trazendo o UId
+                            //dataSnapshot.child("Doacao") acessa o valor de qualquer filho depois do UId com "Doacao"
+                            //trocar "urlFotoPerfil" por "urlFotoLivro"
+                            CardAdapter livro = new CardAdapter(dataSnapshot.getKey(), dataSnapshot.child("Doacao").child("titulo").getValue().toString(), dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getValue().toString());
+                            rowLivros.add(livro);
+                            arrayAdapter.notifyDataSetChanged();
+                        }
 
                 }
             }
