@@ -1,6 +1,7 @@
 package com.jd.livrei0;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -19,7 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class EscolhaLoginActivity extends AppCompatActivity {
 
-    private Button mEntrar;
+    private Button mEntrar/*, mMaterial*/;
     private TextInputEditText mEmail;
     private TextInputEditText mSenha;
     private TextView mRegistrar;
@@ -54,6 +55,10 @@ public class EscolhaLoginActivity extends AppCompatActivity {
         mEmail = (TextInputEditText) findViewById(R.id.intxEmail);
         mSenha = (TextInputEditText) findViewById(R.id.intxtSenha);
         mRegistrar = (TextView) findViewById(R.id.txtRegistrar);
+        mRegistrar.setHighlightColor(Color.parseColor("#FFD180"));
+        mEntrar.setHighlightColor(Color.parseColor("#FFD180"));
+
+        //mMaterial = (Button) findViewById(R.id.material);
 
         mRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override

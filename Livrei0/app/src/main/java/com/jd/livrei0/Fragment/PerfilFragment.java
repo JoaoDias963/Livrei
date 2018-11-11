@@ -1,23 +1,23 @@
-package com.jd.livrei0;
+package com.jd.livrei0.Fragment;
 
-import android.content.Context;
+
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,17 +29,19 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.jd.livrei0.R;
 import com.jd.livrei0.Utils.GradientDrawable;
 
-
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PerfilActivity extends AppCompatActivity {
+import static android.app.Activity.RESULT_OK;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class PerfilFragment extends Fragment {
 
     private static final int TAKE_FOTO_CODE = 1234;
     private EditText mNomeUsuario;
@@ -54,15 +56,20 @@ public class PerfilActivity extends AppCompatActivity {
 
     private Uri resultUri;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perfil);
+    public PerfilFragment() {
+        // Required empty public constructor
+    }
 
-        mNomeUsuario = (EditText) findViewById(R.id.nomeUsuario);
-        mImagemPerfil = (ImageView) findViewById(R.id.imagemPerfil);
-        mConfirmaPerfil = (Button) findViewById(R.id.btnConfirmaPerfil);
-        mCancelaPerfil = (Button) findViewById(R.id.btnCancelaPerfil);
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_perfil, container, false);
+
+        mNomeUsuario = (EditText) view.findViewById(R.id.nomeUsuario);
+        mImagemPerfil = (ImageView) view.findViewById(R.id.imagemPerfil);
+        mConfirmaPerfil = (Button) view.findViewById(R.id.btnConfirmaPerfil);
+        mCancelaPerfil = (Button) view.findViewById(R.id.btnCancelaPerfil);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mNomeUsuario.setBackground(new GradientDrawable().setBorderRoundedEDITTEXT());
@@ -84,7 +91,7 @@ public class PerfilActivity extends AppCompatActivity {
         mImagemPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               tirarFoto();
+                tirarFoto();
             }
         });
 
@@ -100,11 +107,13 @@ public class PerfilActivity extends AppCompatActivity {
         mCancelaPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+               // finish();
                 return;
             }
         });
 
+        // Inflate the layout for this fragment
+        return view;
     }
 
     private void tirarFoto() {
@@ -113,7 +122,7 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == TAKE_FOTO_CODE && resultCode == RESULT_OK){
             //recupera imagem atraves do bundle
             Bundle extras = data.getExtras();
@@ -152,7 +161,7 @@ public class PerfilActivity extends AppCompatActivity {
                     }
                     if(map.get("urlFotoPerfil") != null){
                         imgPerfilUrl = map.get("urlFotoPerfil").toString(); // pega o child "urlFotoPerfil"
-                        Glide.with(getApplicationContext()).load(imgPerfilUrl).into(mImagemPerfil);//popula com o foto do banco pela url
+                        Glide.with(getContext()).load(imgPerfilUrl).into(mImagemPerfil);//popula com o foto do banco pela url
                     }
 
                 }
@@ -166,7 +175,7 @@ public class PerfilActivity extends AppCompatActivity {
     }
 
     private void salvarInformacaoUsuario() {
-         nome = mNomeUsuario.getText().toString();
+        nome = mNomeUsuario.getText().toString();
 
         Map informacoesUsuario = new HashMap();
         informacoesUsuario.put("Nome", nome);
@@ -204,13 +213,14 @@ public class PerfilActivity extends AppCompatActivity {
                     userInfo.put("urlFotoPerfil", urlDownloadFotoPerfil);
                     mUsuarioDB.updateChildren(userInfo);
 
-                    finish();
+                    //finish();
                     return;
 
                 }
             });
         }else{
-            finish();
+            //finish();
         }
     }
+
 }

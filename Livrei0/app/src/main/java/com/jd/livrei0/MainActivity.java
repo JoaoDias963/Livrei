@@ -1,11 +1,19 @@
 package com.jd.livrei0;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -20,7 +28,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jd.livrei0.Cards.CardAdapter;
 import com.jd.livrei0.Cards.arrayAdapter;
+import com.jd.livrei0.TabAdapter.TabAdapter;
 import com.jd.livrei0.Trocas.TrocasActivity;
+import com.jd.livrei0.Utils.SlidingTabLayout;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -31,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
         private CardAdapter cardsData[];
         private com.jd.livrei0.Cards.arrayAdapter arrayAdapter;
         private int i;
-
-        private Button sair;
+        private Toolbar toolbar;
 
         private FirebaseAuth mFirebaseAuth;
         private DatabaseReference mUsuarioDb , mChatDb;
@@ -42,35 +51,64 @@ public class MainActivity extends AppCompatActivity {
 
         private String TrocaId;
 
+        //teste fragment
+        private SlidingTabLayout slidingTabLayout;
+        private ViewPager viewPager;
+
 
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
 
+
+
             mUsuarioDb = FirebaseDatabase.getInstance().getReference().child("Usuarios");
             mChatDb = FirebaseDatabase.getInstance().getReference().child("Chat");
             mFirebaseAuth = FirebaseAuth.getInstance();
 
-            sair = (Button) findViewById(R.id.btnSair);
+            toolbar = (Toolbar) findViewById(R.id.toolbar_principal);
+            toolbar.setTitle("Livrei");
+            setSupportActionBar(toolbar);
 
-            sair.setOnClickListener(new View.OnClickListener() {
+
+
+            //sair = (Button) findViewById(R.id.btnSair);
+
+       /*     sair.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     deslogar();
                 }
             });
-
+*/
             checarDoacoes();
 
             rowLivros = new ArrayList<CardAdapter>();
 
             arrayAdapter = new arrayAdapter(this, R.layout.item, rowLivros  );
 
-            SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
+            //SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
 
-            flingContainer.setAdapter(arrayAdapter);
-            flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+            //teste fragment
+            slidingTabLayout = (SlidingTabLayout) findViewById(R.id.slt_tab);
+            viewPager = (ViewPager) findViewById(R.id.vp_pagina);
+
+
+            slidingTabLayout.setDistributeEvenly(true);
+
+            //configura adapter
+            TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager());
+            viewPager.setAdapter(tabAdapter);
+
+            slidingTabLayout.setViewPager(viewPager);
+            slidingTabLayout.setSelectedIndicatorColors(ContextCompat.getColor(this, R.color.colorSlide));
+
+
+
+
+           // flingContainer.setAdapter(arrayAdapter);
+          /*  flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
                 @Override
                 public void removeFirstObjectInAdapter() {
                     // this is the simplest way to delete an object from the Adapter (/AdapterView)
@@ -131,8 +169,38 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Clique",Toast.LENGTH_SHORT).show();
                 }
             });
-
+*/
         }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+            MenuInflater menuInflater = getMenuInflater();
+            menuInflater.inflate(R.menu.menu_main, menu);
+
+            return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+            switch (item.getItemId()){
+                case R.id.perfil:
+                    abrirPerfil();
+                    break;
+                case R.id.sair:
+                    deslogar();
+                    break;
+                case R.id.cad_livro:
+                    cadastrarLivro();
+                    break;
+                /*case R.id.trocas_disponiveis:
+                    mostrarTrocas();
+                    break;*/
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void testaSeTroca(final String userId) {
             //referência ao livro que apareceu na tela foi para o "Interessa"
@@ -251,19 +319,19 @@ public class MainActivity extends AppCompatActivity {
         return;
     }
 
-    public void abrirPerfil(View view) {
+    public void abrirPerfil() {
         Intent intent = new Intent(MainActivity.this, PerfilActivity.class);
         startActivity(intent);
         return;
     }
 
-    public void cadastrarLivro(View view) {
+    public void cadastrarLivro() {
             Intent intent = new Intent(MainActivity.this, CadastrarDoacaoActivity.class);
             startActivity(intent);
             return;
     }
 
-    public void mostrarTrocas(View view) {
+    public void mostrarTrocas() {
         Intent intent = new Intent(MainActivity.this, TrocasActivity.class);
         startActivity(intent);
         return;

@@ -10,9 +10,12 @@ import android.widget.TextView;
 
 import com.jd.livrei0.R;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ChatViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
 
     public TextView mMensagemChat;
+    public CircleImageView mImagemPerfil;
     public LinearLayout mChatContainer;
 
     public ChatViewHolders(View itemView){
@@ -20,6 +23,7 @@ public class ChatViewHolders extends RecyclerView.ViewHolder implements View.OnC
         itemView.setOnClickListener(this);
 
         mMensagemChat = itemView.findViewById(R.id.chatmensagem);
+        mImagemPerfil = itemView.findViewById(R.id.image_perfil_circular);
         mChatContainer = itemView.findViewById(R.id.chatcontainer);
 
 

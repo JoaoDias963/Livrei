@@ -1,15 +1,19 @@
 package com.jd.livrei0.Chats;
 
+
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,18 +30,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mChatAdapter;
     private RecyclerView.LayoutManager mChatLayoutManager;
-
+    private NestedScrollView nestedScrollView;
     private EditText mEnviarEditText;
     private Button mBotaoEnviar;
 
+    private CircleImageView mFotoPerfil;
+
+
+
     private String usuarioAtual, trocaId, chatId;
 
-    DatabaseReference mDatabaseUser, mDatabaseChat;
+    DatabaseReference mDatabaseFotoUserAtual, mDatabaseChat, mFotoUsuarioDaTroca, mDatabaseUser;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,22 +61,27 @@ public class ChatActivity extends AppCompatActivity {
 
         usuarioAtual = FirebaseAuth.getInstance().getUid();
 
-        //mDatabaseUser = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(usuarioAtual).child("Trocas").child(trocaId);
+        mDatabaseFotoUserAtual = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(usuarioAtual).child("urlFotoPerfil");
         mDatabaseChat = FirebaseDatabase.getInstance().getReference().child("Chat").child(trocaId);
+        mDatabaseUser = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(usuarioAtual).child("Trocas").child(trocaId);
         getMensagensChat();
         //getChatId();
 
+
+
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        mRecyclerView.setNestedScrollingEnabled(false);
+        mRecyclerView.setNestedScrollingEnabled(true);
         mRecyclerView.setHasFixedSize(false);
         mChatLayoutManager = new LinearLayoutManager(ChatActivity.this);
         mRecyclerView.setLayoutManager(mChatLayoutManager);
         mChatAdapter = new ChatAdapter(getDataSetChat(), ChatActivity.this);
         mRecyclerView.setAdapter(mChatAdapter);
+        mFotoPerfil = (CircleImageView) findViewById(R.id.image_perfil_circular);
 
         mEnviarEditText = findViewById(R.id.mensagem);
         mBotaoEnviar = findViewById(R.id.enviarMsg);
 
+        mRecyclerView.smoothScrollToPosition(NestedScrollView.FOCUS_DOWN);
         mBotaoEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,12 +110,26 @@ public class ChatActivity extends AppCompatActivity {
 
                     if (mensagem != null && criadoPeloUsuario!=null){
                         Boolean usuarioAtualBoolean = false;
+
+
                         if (criadoPeloUsuario.equals(usuarioAtual)){
                             usuarioAtualBoolean = true;
+
+
+                            ChatObject novaMensagem = new ChatObject(mensagem,usuarioAtualBoolean,trocaId);
+                            resultChat.add(novaMensagem);
+
+                            mChatAdapter.notifyDataSetChanged();
+                            mRecyclerView.smoothScrollToPosition(NestedScrollView.FOCUS_DOWN);
+                        }else{
+
+                            ChatObject novaMensagem = new ChatObject(mensagem,usuarioAtualBoolean, trocaId);
+                            resultChat.add(novaMensagem);
+
+                            mChatAdapter.notifyDataSetChanged();
+                            mRecyclerView.smoothScrollToPosition(NestedScrollView.FOCUS_DOWN);
                         }
-                        ChatObject novaMensagem = new ChatObject(mensagem,usuarioAtualBoolean);
-                        resultChat.add(novaMensagem);
-                        mChatAdapter.notifyDataSetChanged();
+
 
                     }
                 }
@@ -139,9 +169,10 @@ public class ChatActivity extends AppCompatActivity {
             novaMensagem.put("texto", enviarMensagemTexto);
 
             newMessageDb.setValue(novaMensagem);
+
         }
         mEnviarEditText.setText(null);
-
+        mRecyclerView.smoothScrollToPosition(NestedScrollView.FOCUS_DOWN);
     }
 
     private void getChatId(){

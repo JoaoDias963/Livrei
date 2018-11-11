@@ -1,20 +1,27 @@
-package com.jd.livrei0;
+package com.jd.livrei0.Fragment;
+
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TabHost;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.SuccessContinuation;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -22,13 +29,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.jd.livrei0.R;
+import com.jd.livrei0.TabAdapter.TabAdapter;
 import com.jd.livrei0.Utils.GradientDrawable;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CadastrarDoacaoActivity extends AppCompatActivity {
+import static android.app.Activity.RESULT_OK;
+
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class CadLivroTrocaFragment extends Fragment {
 
     private static final int TAKE_FOTO_CODE = 1234;
     private EditText mTitulo, mAutor;
@@ -42,21 +56,27 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
     private String userId;
     private DatabaseReference mUsuarioDb;
 
+    public CadLivroTrocaFragment() {
+        // Required empty public constructor
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cadastrar_doacao);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        final View view = inflater.inflate(R.layout.fragment_cad_livro_troca, container, false);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         userId = mFirebaseAuth.getCurrentUser().getUid();
         mUsuarioDb = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(userId);
 
 
-        mTitulo = (EditText) findViewById(R.id.intxtCadTitulo);
-        mAutor = (EditText) findViewById(R.id.intxtCadAutor);
-        mFoto = (ImageView) findViewById(R.id.imgDoaLivro);
-        mTrocarLivro = (Button) findViewById(R.id.btnDoar);
-        mCancelaTroca = (Button) findViewById(R.id.btnCancelaDoacao);
+        mTitulo = (EditText) view.findViewById(R.id.intxtCadTitulo);
+        mAutor = (EditText) view.findViewById(R.id.intxtCadAutor);
+        mFoto = (ImageView) view.findViewById(R.id.imgDoaLivro);
+        mTrocarLivro = (Button) view.findViewById(R.id.btnDoar);
+        mCancelaTroca = (Button) view.findViewById(R.id.btnCancelaDoacao);
 
 
 
@@ -80,6 +100,14 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
             }
         });
 
+        mTrocarLivro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cadastrarDoacao(view);
+            }
+        });
+
+        return view;
     }
 
     private void tirarFoto() {
@@ -87,7 +115,7 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
         startActivityForResult(intent, TAKE_FOTO_CODE);
     }
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == TAKE_FOTO_CODE && resultCode == RESULT_OK){
             //recupera imagem atraves do bundle
             Bundle extras = data.getExtras();
@@ -102,8 +130,8 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
 
     public void cadastrarDoacao(View view) {
         if(mFoto != null){
-            final String titulo = mTitulo.getEditableText().toString();
-            final String autor = mAutor.getEditableText().toString();
+            final String titulo = mTitulo.getText().toString();
+            final String autor = mAutor.getText().toString();
 
            /* Map informacoesDoacao = new HashMap();
             informacoesDoacao.put("titulo", titulo);
@@ -140,23 +168,17 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
                     //livroInfo.put("idLivro", idLivro);
                     mUsuarioDb.child("Doacao")/*.child(idLivro)*/.updateChildren(livroInfo);
 
-                    finish();
+
+
                     return;
 
                 }
             });
-        }else{
-            finish();
+
         }
 
 
 
-        }//fim if foto not null
+    }//fim if foto not null
 
-
-    public void cancelarDoacao(View view) {
-        finish();
-        return;
-    }
 }
-
