@@ -2,6 +2,8 @@ package com.jd.livrei0;
 
 import android.content.Intent;
 import android.graphics.Color;
+
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
@@ -17,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.jd.livrei0.Utils.GradientDrawable;
 
 public class EscolhaLoginActivity extends AppCompatActivity {
 
@@ -57,6 +60,12 @@ public class EscolhaLoginActivity extends AppCompatActivity {
         mRegistrar = (TextView) findViewById(R.id.txtRegistrar);
         mRegistrar.setHighlightColor(Color.parseColor("#FFD180"));
         mEntrar.setHighlightColor(Color.parseColor("#FFD180"));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+            mEntrar.setBackground(new GradientDrawable().setBorderRoundedBUTTONConfirma());
+        }else{
+            mEntrar.setBackgroundResource(R.drawable.btn_arredondado_confirma);
+        }
 
         //mMaterial = (Button) findViewById(R.id.material);
 

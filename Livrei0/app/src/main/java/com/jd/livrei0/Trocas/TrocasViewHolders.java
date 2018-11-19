@@ -23,9 +23,10 @@ public class TrocasViewHolders extends RecyclerView.ViewHolder implements View.O
 
         mTrocasIdNome = (TextView) itemView.findViewById(R.id.TrocaUsuario);
         mStatusTroca = (TextView) itemView.findViewById(R.id.StatusTroca);
+        mStatusTroca.setVisibility(TextView.INVISIBLE);
         mImagemTroca = (ImageView) itemView.findViewById(R.id.imgTroca);
         mTrocaId = (TextView) itemView.findViewById(R.id.idTroca);
-        //mTrocaId.setVisibility(TextView.INVISIBLE);
+        mTrocaId.setVisibility(TextView.INVISIBLE);
 
 
     }
@@ -36,6 +37,7 @@ public class TrocasViewHolders extends RecyclerView.ViewHolder implements View.O
         Intent intent = new Intent(itemView.getContext(), ChatActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("trocaId", mTrocaId.getText().toString());
+        bundle.putString("status", mStatusTroca.getText().toString());
 
         intent.putExtras(bundle);
         itemView.getContext().startActivity(intent);

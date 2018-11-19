@@ -8,10 +8,13 @@
     <string name="Usuario">Digite seu usuário</string>
     <string name="BotaoSair">Sair</string>
     <string name="BotaoPerfil">Perfil</string>
-    <string name="BotaoCadastrarLivro">Cadastrar doação</string>
-    <string name="txtCadDoacao">Comece tirando uma foto do seu livro</string>
+    <string name="BotaoCadastrarLivro">Cadastrar Livro</string>
+    <string name="txtCadDoacao">Clique e tire uma foto do seu livro </string>
     <string name="cadTitulo">Digite o título do livro</string>
     <string name="cadAutor">Digite o autor do livro</string>
-    <string name="BotaoDoar">Doar este livro</string>
+    <string name="BotaoDoar">Disponibilizar este livro</string>
     <string name="BotaoTrocas">Trocas disponíveis</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

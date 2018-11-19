@@ -5,27 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Chats.ChatActivity"
+
     android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/sendLayout">
 
-        <android.support.v7.widget.RecyclerView
+
+        <TextView
+            android:id="@+id/textoTituloChat"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:text="Status"
+            android:textAlignment="center"
+
+
+            />
+
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nestedScroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/sendLayout"
+        android:layout_marginTop="30dp"
+
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/textoTituloChat"
+        android:fillViewport="true"
+
+
+        >
+
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+
+
+
+
+
+
             >
 
         </android.support.v7.widget.RecyclerView>
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="31dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginRight="36dp"
+        android:src="@drawable/ic_compare_arrows"
+        />
+
     <LinearLayout
         android:id="@+id/sendLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:background="@android:color/darker_gray"
         android:orientation="horizontal"
         >
         <EditText
@@ -34,6 +81,9 @@
             android:layout_height="wrap_content"
             android:hint="Mensagem..."
             android:id="@+id/mensagem"
+
+
+
             />
         <Button
             android:layout_weight="0.3"

@@ -2,6 +2,9 @@ package com.jd.livrei0;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -9,10 +12,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -34,7 +39,7 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
     private EditText mTitulo, mAutor;
     private Button mTrocarLivro, mCancelaTroca;
     private String urlLivroDoacao;
-    private ImageView mFoto;
+    private ImageView mFoto, mRotacionaImagem;
     private Uri resultUri;
     private String urlDownloadFotoDoacaoLivro;
 
@@ -55,9 +60,11 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
         mTitulo = (EditText) findViewById(R.id.intxtCadTitulo);
         mAutor = (EditText) findViewById(R.id.intxtCadAutor);
         mFoto = (ImageView) findViewById(R.id.imgDoaLivro);
+        mRotacionaImagem = (ImageView) findViewById(R.id.rotateImageLivro);
         mTrocarLivro = (Button) findViewById(R.id.btnDoar);
         mCancelaTroca = (Button) findViewById(R.id.btnCancelaDoacao);
 
+        mRotacionaImagem.setVisibility(View.INVISIBLE);
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -73,13 +80,33 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
             mCancelaTroca.setBackgroundResource(R.drawable.btn_arredondado_cancela);
         }
 
+//teste tag foto android+21
+        mFoto.setTag(R.drawable.bookicone);
+        //////
         mFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tirarFoto();
             }
         });
+        mRotacionaImagem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rodarImagem();
+            }
+        });
 
+    }
+
+    private void rodarImagem() {
+        BitmapDrawable drawable = (BitmapDrawable) mFoto.getDrawable();
+        Bitmap imagem = drawable.getBitmap();
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+
+        Bitmap rotacionada =  Bitmap.createBitmap(imagem,0,0, imagem.getWidth(),imagem.getHeight(),matrix,true);
+        mFoto.setImageBitmap(rotacionada);
     }
 
     private void tirarFoto() {
@@ -92,20 +119,107 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
             //recupera imagem atraves do bundle
             Bundle extras = data.getExtras();
             Bitmap imagem = (Bitmap) extras.get("data");
+            //teste mudanca foto
+            mFoto.setTag(imagem.getGenerationId());
+            //teste mudanca foto
             mFoto.setImageBitmap(imagem);
             final Uri imageUri = data.getData();
             resultUri = imageUri;
             //mImagemPerfil.setImageURI(resultUri);
+            mRotacionaImagem.setVisibility(View.VISIBLE);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     public void cadastrarDoacao(View view) {
-        if(mFoto != null){
-            final String titulo = mTitulo.getEditableText().toString();
-            final String autor = mAutor.getEditableText().toString();
+        if (mFoto != null) {
+
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                if ((Integer) mFoto.getTag() != R.drawable.bookicone){
+                    cadastra();
+                }else {
+                    Toast.makeText(this, "Tire uma foto do seu livro antes", Toast.LENGTH_LONG).show();
+                }
+            }else{
+                if(!mFoto.getDrawable().getConstantState().equals(getResources().getDrawable(R.drawable.bookicone).getConstantState())){
+                    cadastra();
+                }else {
+                    Toast.makeText(this, "Tire uma foto do seu livro antes", Toast.LENGTH_LONG).show();
+                }
+            }
+/*
+            if ((Integer) mFoto.getTag() != R.drawable.bookicone){
+
+
+                final String titulo = mTitulo.getEditableText().toString();
+                final String autor = mAutor.getEditableText().toString();
 
            /* Map informacoesDoacao = new HashMap();
+            informacoesDoacao.put("titulo", titulo);
+            informacoesDoacao.put("autor", autor);
+
+
+            mUsuarioDb.child("Doacao").updateChildren(informacoesDoacao); */
+/*
+                StorageReference caminhoFotoDoacaoLivro = FirebaseStorage.getInstance().getReference().child("ImagensLivrosDoacao").child(userId);
+
+                mFoto.setDrawingCacheEnabled(true);
+                mFoto.buildDrawingCache();
+                Bitmap bitmap = mFoto.getDrawingCache();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 35, baos);
+                mFoto.setDrawingCacheEnabled(false);
+                byte[] data = baos.toByteArray();
+
+                caminhoFotoDoacaoLivro.putBytes(data).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
+                        while (!urlTask.isSuccessful()) ;
+                        Uri downloadUrl = urlTask.getResult();
+                        urlDownloadFotoDoacaoLivro = downloadUrl.toString();
+
+                        //update nas informações do usuario atual
+                        Map livroInfo = new HashMap();
+                        livroInfo.put("urlFotoDoacaoLivro", urlDownloadFotoDoacaoLivro);
+                        livroInfo.put("titulo", titulo);
+                        livroInfo.put("autor", autor);
+                        //gera id do livro
+                        //String idLivro = mUsuarioDb.child("Doacao").push().getKey();
+                        //livroInfo.put("idLivro", idLivro);
+                        mUsuarioDb.child("Doacao")/*.child(idLivro)*//*.updateChildren(livroInfo);
+
+                        finish();
+                        return;
+
+                    }
+                });
+            } else {
+                Toast.makeText(this, "Tire uma foto do seu livro antes", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }*/
+
+        } else {
+            finish();
+        }//fim if foto not null
+
+
+    }
+
+
+    public void cancelarDoacao(View view) {
+        finish();
+        return;
+    }
+
+    public void cadastra(){
+
+        final String titulo = mTitulo.getEditableText().toString();
+        final String autor = mAutor.getEditableText().toString();
+
+        if (!autor.isEmpty() && !titulo.isEmpty()){
+              /* Map informacoesDoacao = new HashMap();
             informacoesDoacao.put("titulo", titulo);
             informacoesDoacao.put("autor", autor);
 
@@ -126,7 +240,7 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                    while (!urlTask.isSuccessful());
+                    while (!urlTask.isSuccessful()) ;
                     Uri downloadUrl = urlTask.getResult();
                     urlDownloadFotoDoacaoLivro = downloadUrl.toString();
 
@@ -145,18 +259,11 @@ public class CadastrarDoacaoActivity extends AppCompatActivity {
 
                 }
             });
+
         }else{
-            finish();
+            Toast.makeText(this,"Preencha os dados corretamente",Toast.LENGTH_LONG).show();
         }
 
-
-
-        }//fim if foto not null
-
-
-    public void cancelarDoacao(View view) {
-        finish();
-        return;
     }
 }
 

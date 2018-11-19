@@ -7,6 +7,7 @@
     android:background="@drawable/caio"
     tools:context=".EscolhaLoginActivity">
 
+
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="0dp"
@@ -15,7 +16,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
-        android:background="@drawable/btn_arredondado_confirma"
+
         android:text="@string/botaoLogin"
         android:textColor="@color/Botoes"
         app:layout_constraintBottom_toBottomOf="parent"

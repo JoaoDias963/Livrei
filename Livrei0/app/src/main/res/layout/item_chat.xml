@@ -1,22 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="20sp"
+        <RelativeLayout
         android:id="@+id/chatcontainer"
-        >
-        <TextView
-            android:paddingBottom="20sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Text"
-            android:id="@+id/chatmensagem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/redondo"
+        android:orientation="horizontal"
+        android:padding="10sp"
+        android:layout_marginBottom="5dp"
+        android:paddingBottom="10dp"
+
+
+            >
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image_perfil_circular"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+
             />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/chatmensagem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15sp"
+            android:paddingBottom="15sp"
+            android:layout_toRightOf="@+id/image_perfil_circular"
+            android:layout_alignParentTop="true"
 
-</LinearLayout>
+            android:text="Text" />
+        </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/chatcontainersender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/redondo"
+        android:orientation="horizontal"
+        android:padding="10sp"
+        android:layout_marginBottom="5dp"
+        android:paddingBottom="10dp"
+        android:layout_alignParentRight="true"
+
+
+        >
+
+
+        <TextView
+            android:id="@+id/chatmensagem_sender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15sp"
+            android:paddingBottom="15sp"
+
+            android:layout_alignParentTop="true"
+
+            android:text="Text" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image_perfil_circular_sender"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@+id/chatmensagem_sender"
+
+            />
+
+    </RelativeLayout>
+
+
+    </RelativeLayout>
+

@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
@@ -44,7 +47,7 @@ public class PerfilActivity extends AppCompatActivity {
     private static final int TAKE_FOTO_CODE = 1234;
     private EditText mNomeUsuario;
     private Button mConfirmaPerfil, mCancelaPerfil;
-    private ImageView mImagemPerfil;
+    private ImageView mImagemPerfil, mRodarImagem;
     private String urlDownloadFotoPerfil;
 
     private FirebaseAuth mAuth;
@@ -61,8 +64,10 @@ public class PerfilActivity extends AppCompatActivity {
 
         mNomeUsuario = (EditText) findViewById(R.id.nomeUsuario);
         mImagemPerfil = (ImageView) findViewById(R.id.imagemPerfil);
+        mRodarImagem = (ImageView) findViewById(R.id.rotateImagePerfil);
         mConfirmaPerfil = (Button) findViewById(R.id.btnConfirmaPerfil);
         mCancelaPerfil = (Button) findViewById(R.id.btnCancelaPerfil);
+        mRodarImagem.setVisibility(View.INVISIBLE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mNomeUsuario.setBackground(new GradientDrawable().setBorderRoundedEDITTEXT());
@@ -80,6 +85,13 @@ public class PerfilActivity extends AppCompatActivity {
         mUsuarioDB = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(userId);
 
         getInformacoesUsuario();
+
+        mRodarImagem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rodarImagem();
+            }
+        });
 
         mImagemPerfil.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +119,17 @@ public class PerfilActivity extends AppCompatActivity {
 
     }
 
+    private void rodarImagem() {
+        BitmapDrawable drawable = (BitmapDrawable) mImagemPerfil.getDrawable();
+        Bitmap imagem = drawable.getBitmap();
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(90);
+
+        Bitmap rotacionada =  Bitmap.createBitmap(imagem,0,0, imagem.getWidth(),imagem.getHeight(),matrix,true);
+        mImagemPerfil.setImageBitmap(rotacionada);
+    }
+
     private void tirarFoto() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, TAKE_FOTO_CODE);
@@ -129,6 +152,7 @@ public class PerfilActivity extends AppCompatActivity {
             resultUri = imageUri;
             //mImagemPerfil.setImageURI(resultUri);
 
+            mRodarImagem.setVisibility(View.VISIBLE);
 
 
         }

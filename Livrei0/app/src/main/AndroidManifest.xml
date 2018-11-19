@@ -30,7 +30,12 @@
         <activity android:name=".PerfilActivity" />
         <activity android:name=".CadastrarDoacaoActivity" />
         <activity android:name=".Trocas.TrocasActivity" />
-        <activity android:name=".Chats.ChatActivity"></activity>
+        <activity android:name=".Chats.ChatActivity"
+                  >
+
+        </activity>
+
+
     </application>
 
 </manifest>
