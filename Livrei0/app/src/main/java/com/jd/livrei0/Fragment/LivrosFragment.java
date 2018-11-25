@@ -164,13 +164,13 @@ public class LivrosFragment extends Fragment {
                                 //mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").child(idTroca).child(userId).setValue(true);
                                 mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").child(userId).child("ChatId").setValue(chatId);
                                 mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").child(userId).child("Status").setValue("Pendente");
-
+                                mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").child(userId).child("ConfirmadoPeloUsuario").setValue(mFirebaseAuth.getCurrentUser().getUid());
 
                                 //referencia o usuario atual e coloca o usuario recebido no Trocas
                                 //mUsuarioDb.child(userId).child("Trocas").child(idTroca).child(mFirebaseAuth.getCurrentUser().getUid()).setValue(true);
                                 mUsuarioDb.child(userId).child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).child("ChatId").setValue(chatId);
                                 mUsuarioDb.child(userId).child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).child("Status").setValue("Pendente");
-
+                                mUsuarioDb.child(userId).child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).child("ConfirmadoPeloUsuario").setValue(userId);
 
 
                                 Toast.makeText(getActivity(), "Você tem uma troca pendente", Toast.LENGTH_LONG).show();

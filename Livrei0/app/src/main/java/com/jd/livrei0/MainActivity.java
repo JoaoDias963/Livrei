@@ -229,10 +229,12 @@ public class MainActivity extends AppCompatActivity {
                                     mUsuarioDb.child(dataSnapshot.getKey()).child("Trocas").child(userId).child("Status").setValue("Pendente");
 
 
+
                                     //referencia o usuario atual e coloca o usuario recebido no Trocas
                                     //mUsuarioDb.child(userId).child("Trocas").child(idTroca).child(mFirebaseAuth.getCurrentUser().getUid()).setValue(true);
                                     mUsuarioDb.child(userId).child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).child("ChatId").setValue(chatId);
                                     mUsuarioDb.child(userId).child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).child("Status").setValue("Pendente");
+
 
 
 

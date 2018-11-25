@@ -107,40 +107,43 @@ public class TrocasDisponiveisFragment extends Fragment {
                     mUsuarioTroca.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            String nome = "";
-                            String imagemLivro = "";
-                            String imagemPerfil = "";
-                            String titulo = "";
-                            String status = "";
-                            String idTroca = "";
-                            if (dataSnapshot.child("Nome").getKey() != null) {
-                                nome = dataSnapshot.child("Nome").getValue().toString();
+                            if (dataSnapshot.exists() && dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getValue().equals("Troca realizada com sucesso")){
+                                String nome = "";
+                                String imagemLivro = "";
+                                String imagemPerfil = "";
+                                String titulo = "";
+                                String status = "";
+                                String idTroca = "";
+                                if (dataSnapshot.child("Nome").getKey() != null) {
+                                    nome = dataSnapshot.child("Nome").getValue().toString();
 
-                            }
-                            if (dataSnapshot.child("urlFotoPerfil").getKey() != null) {
-                                imagemPerfil = dataSnapshot.child("urlFotoPerfil").getValue().toString();
+                                }
+                                if (dataSnapshot.child("urlFotoPerfil").getKey() != null) {
+                                    imagemPerfil = dataSnapshot.child("urlFotoPerfil").getValue().toString();
 
-                            }
-                            if (dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getKey() != null) {
-                                imagemLivro = dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getValue().toString();
+                                }
+                                if (dataSnapshot.child("Doacao").exists() && dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getKey() != null) {
+                                    imagemLivro = dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getValue().toString();
 
-                            }
-                            if (dataSnapshot.child("Doacao").child("titulo").getKey() != null) {
-                                titulo = dataSnapshot.child("Doacao").child("titulo").getValue().toString();
+                                }
+                                if (dataSnapshot.child("Doacao").exists() && dataSnapshot.child("Doacao").child("titulo").getKey() != null) {
+                                    titulo = dataSnapshot.child("Doacao").child("titulo").getValue().toString();
 
-                            }
-                            if (dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getKey() != null) {
-                                status = dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getValue().toString();
-                            }
-                            if (dataSnapshot.child("Trocas").child(usuarioAtual).getKey() != null){
-                                //IDTROCA FORMADO PELO ID DO USUARIO + CHATID
-                                idTroca = dataSnapshot.child("Trocas").child(usuarioAtual).child("ChatId").getValue().toString();
-                            }
+                                }
+                                if (dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getKey() != null) {
+                                    status = dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getValue().toString();
+                                }
+                                if (dataSnapshot.child("Trocas").child(usuarioAtual).getKey() != null){
+                                    //IDTROCA FORMADO PELO ID DO USUARIO + CHATID
+                                    idTroca = dataSnapshot.child("Trocas").child(usuarioAtual).child("ChatId").getValue().toString();
+                                }
 
 
-                            TrocasObject objetoTroca = new TrocasObject(userId, nome, imagemPerfil, imagemLivro, titulo, status, idTroca);
-                            resultTrocas.add(objetoTroca);
-                            mTrocasAdapter.notifyDataSetChanged();
+                                TrocasObject objetoTroca = new TrocasObject(userId, nome, imagemPerfil, imagemLivro, titulo, status, idTroca);
+                                resultTrocas.add(objetoTroca);
+                                mTrocasAdapter.notifyDataSetChanged();
+                            }
+
                         }
 
                         @Override

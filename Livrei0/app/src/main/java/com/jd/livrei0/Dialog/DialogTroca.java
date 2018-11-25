@@ -114,6 +114,7 @@ public class DialogTroca extends DialogFragment {
 
                             }
 
+
                             @Override
                             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
