@@ -3,6 +3,7 @@ package com.jd.livrei0.Chats;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -25,6 +26,7 @@ import android.widget.EditText;
 
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,8 +61,11 @@ public class ChatActivity extends AppCompatActivity {
 
     private String statusTrocaUsuario = "";
     private String statusTrocaAtual = "";
+    private String usuarioTroca = "";
 
     private NestedScrollView mNestedScrollView;
+
+
 
 
 
@@ -138,7 +143,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private void realizaTroca() {
 
-
+        /*
         DialogTroca dialogTroca = new DialogTroca();
         Bundle bundle = new Bundle();
 
@@ -146,7 +151,120 @@ public class ChatActivity extends AppCompatActivity {
         dialogTroca.setArguments(bundle);
 
         dialogTroca.show(getSupportFragmentManager(), "DialogTroca");
+        */
 
+        //teste
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        mDatabaseChat = FirebaseDatabase.getInstance().getReference().child("Chat").child(trocaId);
+
+        final String usuarioAtual = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final DatabaseReference[] mTrocasUsuarioAtual = {FirebaseDatabase.getInstance().getReference().child("Usuarios").child(usuarioAtual)};
+
+        builder.setTitle("A troca foi realizada?");
+        builder.setPositiveButton("SIM, OS LIVROS FORAM TROCADOS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mDatabaseChat.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        if (dataSnapshot.exists()){
+                            String criadoPeloUsuario = null;
+                            if (dataSnapshot.child("CriadoPeloUsuario").getValue() != null){
+                                criadoPeloUsuario = dataSnapshot.child("CriadoPeloUsuario").getValue().toString();
+                                Log.d("USUARIO", criadoPeloUsuario);
+
+                                if (!criadoPeloUsuario.equals(usuarioAtual)){
+                                    mTrocasUsuarioAtual[0].child("Trocas").child(criadoPeloUsuario).child("ConfirmadoPeloUsuario").setValue(usuarioAtual);
+                                    Toast.makeText(getApplicationContext(),"Se o status da troca não mudou, o outro usuário ainda não confirmou a troca. Tente novamente.",Toast.LENGTH_LONG).show();
+
+
+                                    //testa setar troca realizada
+                                    final DatabaseReference mStatusUsuarioTroca = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(criadoPeloUsuario).child("Trocas").child(usuarioAtual);
+                                    final String finalCriadoPeloUsuario = criadoPeloUsuario;
+
+                                    mStatusUsuarioTroca.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if (dataSnapshot.exists()){
+                                                if (dataSnapshot.child("ConfirmadoPeloUsuario").getValue().equals(finalCriadoPeloUsuario)){
+                                                    final String statusUsuarioTroca = dataSnapshot.child("Status").getValue().toString();
+                                                    //usuario atual
+
+                                                    Log.d("statuslog", dataSnapshot.child("Status").getValue().toString());
+
+
+                                                    mTrocasUsuarioAtual[0] = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(usuarioAtual).child("Trocas").child(finalCriadoPeloUsuario).child("Status");
+                                                    mTrocasUsuarioAtual[0].setValue("Troca realizada com sucesso");
+                                                    mTrocasUsuarioAtual[0].addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            final String statusUsuarioAtual = dataSnapshot.getValue().toString();
+
+
+                                                            setarStatusNaView(statusUsuarioTroca,statusUsuarioAtual);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+                                                    //Usuario da troca
+                                                    //mTrocasUsuarioTroca = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(finalCriadoPeloUsuario).child("Trocas").child(usuarioAtual).child("Status");
+                                                    // mTrocasUsuarioTroca.setValue("Troca realizada com sucesso");
+
+                                                    //teste setar
+
+
+                                                   // setarStatusNaView(dataSnapshot.child("Status").getValue(), );
+
+
+                                                }
+
+
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                    //fim testa setar troca realizada
+                                }
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("CANCELAR",null);
+        builder.create().show();
 
 
 
@@ -183,11 +301,14 @@ public class ChatActivity extends AppCompatActivity {
 
                                         //teste comparar
                                         DatabaseReference statusTrocaUsuarioAtual = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("Trocas").child(finalCriadopelousuario).child("Status");
+                                        usuarioTroca=finalCriadopelousuario;
                                         statusTrocaUsuarioAtual.addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 if (dataSnapshot.exists()){
+
                                                     final String statusUsuarioAtual = dataSnapshot.getValue().toString();
+
 
                                                    setarStatusNaView(statusUsuarioTroca,statusUsuarioAtual);
                                                    statusTrocaUsuario = statusUsuarioTroca;
@@ -204,7 +325,11 @@ public class ChatActivity extends AppCompatActivity {
 
                                     }
                                    // mNestedScrollView.fullScroll(NestedScrollView.FOCUS_DOWN);
-
+                                    mNestedScrollView.post(new Runnable() {
+                                        public void run() {
+                                            mNestedScrollView.fullScroll(NestedScrollView.FOCUS_DOWN);
+                                        }
+                                    });
 
                                 }
 
@@ -406,21 +531,24 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
-    private void setarStatusNaView(String statusUsuarioTroca, String statusUsuarioAtual){
+    private void setarStatusNaView(final String statusUsuarioTroca, final String statusUsuarioAtual) {
 
-        if (statusUsuarioTroca.equals(statusUsuarioAtual)){
-            mStatusTitulo.setText("Status da troca: "+ statusUsuarioAtual);
-        }
-            if (statusUsuarioAtual.equals("Pendente") && statusUsuarioTroca.equals("Troca realizada com sucesso")){
-                mStatusTitulo.setText("Status da troca: " + statusUsuarioAtual);
-            }
-                if (statusUsuarioAtual.equals("Troca realizada com sucesso") && statusUsuarioTroca.equals("Pendente")){
-                    mStatusTitulo.setText("Status da troca: "+ statusUsuarioTroca);
+
+                if (statusUsuarioTroca.equals(statusUsuarioAtual)) {
+                    mStatusTitulo.setText("Status da troca: " + statusUsuarioTroca);
+                }
+                if (statusUsuarioAtual.equals("Pendente") && statusUsuarioTroca.equals("Troca realizada com sucesso")) {
+                    mStatusTitulo.setText("Status da troca: " + statusUsuarioAtual);
+                }
+                if (statusUsuarioAtual.equals("Troca realizada com sucesso") && statusUsuarioTroca.equals("Pendente")) {
+                    mStatusTitulo.setText("Status da troca: " + statusUsuarioTroca);
                 }
 
 
 
+
     }
+
 
 
 }
