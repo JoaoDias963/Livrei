@@ -2,6 +2,7 @@
     <string name="app_name">Livrei</string>
     <string name="botaoLogin">Entrar</string>
     <string name="Email">Digite seu e-mail</string>
+    <string name="EmailCad">Digite um e-mail válido</string>
     <string name="Senha">Digite sua senha</string>
     <string name="Registrar">Não tem uma conta? Registre-se aqui</string>
     <string name="BotaoRegistrar">Registrar conta</string>
@@ -9,10 +10,10 @@
     <string name="BotaoSair">Sair</string>
     <string name="BotaoPerfil">Perfil</string>
     <string name="BotaoCadastrarLivro">Cadastrar Livro</string>
-    <string name="txtCadDoacao">Clique e tire uma foto do seu livro </string>
+    <string name="txtCadDoacao">Qual é o livro que você irá trocar? </string>
     <string name="cadTitulo">Digite o título do livro</string>
     <string name="cadAutor">Digite o autor do livro</string>
-    <string name="BotaoDoar">Disponibilizar este livro</string>
+    <string name="BotaoDoar">Quero trocar este livro</string>
     <string name="BotaoTrocas">Trocas disponíveis</string>
 
     <!-- TODO: Remove or change this placeholder text -->

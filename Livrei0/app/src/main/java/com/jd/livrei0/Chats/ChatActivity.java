@@ -473,6 +473,7 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         mEnviarEditText.setText("");
+       // mEnviarEditText.requestFocus();
 
 
     }
@@ -619,6 +620,8 @@ public class ChatActivity extends AppCompatActivity {
                                                         mStatusTitulo.setText("Status: " + statusDaTroca[0]);
                                                     }
                                                     /////////
+                                                    //recreate();
+                                                    ///
                                                 }
                                             }
 

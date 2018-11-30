@@ -28,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.jd.livrei0.Cards.CardAdapter;
 import com.jd.livrei0.Cards.arrayAdapter;
+import com.jd.livrei0.Fragment.LivrosFragment;
+import com.jd.livrei0.Fragment.TrocasDisponiveisFragment;
 import com.jd.livrei0.TabAdapter.TabAdapter;
 import com.jd.livrei0.Trocas.TrocasActivity;
 import com.jd.livrei0.Utils.SlidingTabLayout;
@@ -93,15 +95,21 @@ public class MainActivity extends AppCompatActivity {
             //teste fragment
             slidingTabLayout = (SlidingTabLayout) findViewById(R.id.slt_tab);
             viewPager = (ViewPager) findViewById(R.id.vp_pagina);
+            //
+
+            //
 
 
             slidingTabLayout.setDistributeEvenly(true);
 
             //configura adapter
-            TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager());
+            final TabAdapter tabAdapter = new TabAdapter(getSupportFragmentManager());
             viewPager.setAdapter(tabAdapter);
 
             slidingTabLayout.setViewPager(viewPager);
+
+
+
             slidingTabLayout.setSelectedIndicatorColors(ContextCompat.getColor(this, R.color.colorSlide));
 
 
@@ -202,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void testaSeTroca(final String userId) {
+    /*private void testaSeTroca(final String userId) {
             //referência ao livro que apareceu na tela foi para o "Interessa"
             DatabaseReference interresseUsuarioAtual = mUsuarioDb.child(mFirebaseAuth.getCurrentUser().getUid()).child("Interessa").child(userId);
             interresseUsuarioAtual.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -238,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
                                     Toast.makeText(MainActivity.this, "Você tem uma troca pendente", Toast.LENGTH_LONG).show();
                                 }
                             }
@@ -253,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-    }
+    }*/
 
 
     public void checarDoacoes() {
@@ -328,6 +337,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void cadastrarLivro() {
+
             Intent intent = new Intent(MainActivity.this, CadastrarDoacaoActivity.class);
             startActivity(intent);
             return;
@@ -338,4 +348,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         return;
     }
+
+
+
 }

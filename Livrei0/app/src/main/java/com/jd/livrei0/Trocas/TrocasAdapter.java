@@ -45,7 +45,7 @@ public class TrocasAdapter extends RecyclerView.Adapter<TrocasViewHolders>  {
         trocasViewHolders.mTrocaId.setText(listaTrocas.get(posicao).getIdTroca());
         trocasViewHolders.mTrocaId.setVisibility(View.INVISIBLE);
         if (listaTrocas.get(posicao).getimgUrlLivro() != null){
-            Glide.with(context).load(listaTrocas.get(posicao).getimgUrlLivro()).apply(new RequestOptions().circleCrop()).into(trocasViewHolders.mImagemTroca);
+            Glide.with(context).load(listaTrocas.get(posicao).getimgUrlLivro()).into(trocasViewHolders.mImagemTroca);
         }
 
     }
@@ -54,4 +54,8 @@ public class TrocasAdapter extends RecyclerView.Adapter<TrocasViewHolders>  {
     public int getItemCount() {
         return this.listaTrocas.size();
     }
+
+
+
+
 }

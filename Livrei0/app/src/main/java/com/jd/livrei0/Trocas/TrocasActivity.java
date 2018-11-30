@@ -2,6 +2,7 @@ package com.jd.livrei0.Trocas;
 
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -74,6 +76,8 @@ public class TrocasActivity extends AppCompatActivity {
         //referencia ao id da troca atual
         //final String idDaTroca = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(usuarioAtual).child("Trocas").child(key).getKey();
         final DatabaseReference mTrocaDb = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(usuarioAtual).child("Trocas").child(key);
+
+
         mTrocaDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -83,6 +87,8 @@ public class TrocasActivity extends AppCompatActivity {
 
 
                     DatabaseReference mUsuarioTroca = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(userId);
+                    /*
+                    /////SEM TEMPO REAL
                     mUsuarioTroca.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -127,6 +133,70 @@ public class TrocasActivity extends AppCompatActivity {
 
                         }
                     });
+                    //FIM SEM TEMPO REAL
+                    */
+
+                    //TESTE TEMPO REAL
+                    mUsuarioTroca.addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            String nome = "";
+                            String imagemLivro = "";
+                            String imagemPerfil = "";
+                            String titulo = "";
+                            String status = "";
+                            String idTroca = "";
+                            if (dataSnapshot.child("Nome").getKey() != null) {
+                                nome = dataSnapshot.child("Nome").getValue().toString();
+
+                            }
+                            if (dataSnapshot.child("urlFotoPerfil").getKey() != null) {
+                                imagemPerfil = dataSnapshot.child("urlFotoPerfil").getValue().toString();
+
+                            }
+                            if (dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getKey() != null) {
+                                imagemLivro = dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getValue().toString();
+
+                            }
+                            if (dataSnapshot.child("Doacao").child("titulo").getKey() != null) {
+                                titulo = dataSnapshot.child("Doacao").child("titulo").getValue().toString();
+
+                            }
+                            if (dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getKey() != null) {
+                                status = dataSnapshot.child("Trocas").child(usuarioAtual).child("Status").getValue().toString();
+                            }
+                            if (dataSnapshot.child("Trocas").child(usuarioAtual).getKey() != null){
+                                //IDTROCA FORMADO PELO ID DO USUARIO + CHATID
+                                idTroca = dataSnapshot.child("Trocas").child(usuarioAtual).child("ChatId").getValue().toString();
+                            }
+
+
+                            TrocasObject objetoTroca = new TrocasObject(userId, nome, imagemPerfil, imagemLivro, titulo, status, idTroca);
+                            resultTrocas.add(objetoTroca);
+                            mTrocasAdapter.notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                    //FIM TESTE TEMPO REAL
 
 
                 }

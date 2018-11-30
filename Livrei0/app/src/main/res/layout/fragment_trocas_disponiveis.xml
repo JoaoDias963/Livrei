@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="lista_livros"
+    android:id="@+id/frag_trocas"
     tools:context=".Trocas.TrocasActivity">
 
     <android.support.v4.widget.NestedScrollView

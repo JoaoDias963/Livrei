@@ -1,7 +1,9 @@
 package com.jd.livrei0;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,6 +14,8 @@ import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -45,8 +49,10 @@ import java.util.Map;
 public class PerfilActivity extends AppCompatActivity {
 
     private static final int TAKE_FOTO_CODE = 1234;
+    private static final int MY_REQUEST_CAMERA = 4321 ;
+    private static final int MY_REQUEST_WRITESTORAGE = 1243;
     private EditText mNomeUsuario;
-    private Button mConfirmaPerfil, mCancelaPerfil;
+    private Button mConfirmaPerfil;
     private ImageView mImagemPerfil, mRodarImagem;
     private String urlDownloadFotoPerfil;
 
@@ -62,22 +68,30 @@ public class PerfilActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil);
 
+        if (ContextCompat.checkSelfPermission(PerfilActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},MY_REQUEST_CAMERA);
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_REQUEST_WRITESTORAGE);
+        }
+
         mNomeUsuario = (EditText) findViewById(R.id.nomeUsuario);
         mImagemPerfil = (ImageView) findViewById(R.id.imagemPerfil);
         mRodarImagem = (ImageView) findViewById(R.id.rotateImagePerfil);
         mConfirmaPerfil = (Button) findViewById(R.id.btnConfirmaPerfil);
-        mCancelaPerfil = (Button) findViewById(R.id.btnCancelaPerfil);
+
         mRodarImagem.setVisibility(View.INVISIBLE);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             mNomeUsuario.setBackground(new GradientDrawable().setBorderRoundedEDITTEXT());
             //mConfirmaPerfil.setBackground(getResources().getDrawable(R.drawable.btn_arredondado_confirma));
             mConfirmaPerfil.setBackground(new GradientDrawable().setBorderRoundedBUTTONConfirma());
-            mCancelaPerfil.setBackground(new GradientDrawable().setBorderRoundedBUTTONCancela());
+
         }else {
             mNomeUsuario.setBackgroundDrawable(new GradientDrawable().setBorderRoundedEDITTEXT());
             mConfirmaPerfil.setBackgroundResource(R.drawable.btn_arredondado_confirma);
-            mCancelaPerfil.setBackgroundResource(R.drawable.btn_arredondado_cancela);
+
         }
 
         mAuth = FirebaseAuth.getInstance();
@@ -109,13 +123,9 @@ public class PerfilActivity extends AppCompatActivity {
         });
 
 
-        mCancelaPerfil.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                return;
-            }
-        });
+
+
+
 
     }
 

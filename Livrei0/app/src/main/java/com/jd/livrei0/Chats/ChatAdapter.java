@@ -1,5 +1,6 @@
 package com.jd.livrei0.Chats;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -123,16 +124,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolders> {
 
             mDatabaseChat = FirebaseDatabase.getInstance().getReference().child("Chat").child(troca);
             //TESTE
+/*
 
-            mDatabaseChat.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    if (dataSnapshot.exists()) {
-
-                        String criadoPeloUsuario = null;
-                        if (dataSnapshot.child("CriadoPeloUsuario").getValue() != null) {
-
-                            criadoPeloUsuario = dataSnapshot.child("CriadoPeloUsuario").getValue().toString();
 
                             if (!criadoPeloUsuario.equals(usuarioLogado)) {
 
@@ -157,28 +150,67 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolders> {
                                     }
                                 });
 
-                                //fim teste status
+                                //fim teste status*/
 
-                                mDadosUsuarioTroca = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(criadoPeloUsuario).child("urlFotoPerfil");
-                                mDadosUsuarioTroca.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                        if (dataSnapshot.exists()) {
-                                            String url = dataSnapshot.getValue().toString();
+            mDatabaseChat.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    if (dataSnapshot.exists()) {
 
+                        String criadoPeloUsuario = null;
+                        if (dataSnapshot.child("CriadoPeloUsuario").getValue() != null) {
+
+                            criadoPeloUsuario = dataSnapshot.child("CriadoPeloUsuario").getValue().toString();
+
+                            final String[] urlfoto = {""};
+                            mDadosUsuarioTroca = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(criadoPeloUsuario).child("urlFotoPerfil");
+                            mDadosUsuarioTroca.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.exists()) {
+                                         String url = dataSnapshot.getValue().toString();
+
+
+                                         //urlfoto[0] = url;
                                             carregarFoto(url, chatViewHolders.mImagemPerfilRecebido);//Glide.with(context).load(url).into(chatViewHolders.mImagemPerfil);
 
-                                        }
-                                    }
 
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
 
                                     }
-                                });
-                            }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+                            //carregarFoto(urlfoto[0], chatViewHolders.mImagemPerfilRecebido);//Glide.with(context).load(url).into(chatViewHolders.mImagemPerfil);
+
                         }
+
+
+                        //FIM TESTE
+           /* mDadosUsuarioTroca = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(troca).child("urlFotoPerfil");
+            //DatabaseReference foto =mDadosUsuarioLogado.child("urlFotoPerfil");
+            mDadosUsuarioTroca.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if(dataSnapshot.exists()){
+                        String url = dataSnapshot.getValue().toString();
+                        Glide.with(context).load(url).into(chatViewHolders.mImagemPerfil);
                     }
+*/
+                        chatViewHolders.mMensagemChatRecebido.setGravity(Gravity.START);
+
+                        chatViewHolders.mMensagemChatRecebido.setTextColor(Color.parseColor("#000000"));
+                        chatViewHolders.mChatContainerRecebido.setBackgroundColor(Color.parseColor("#FFF3E0"));
+
+                        chatViewHolders.mChatContainerRecebido.setBackgroundResource(R.drawable.redondo);
+
+
+                    }
+
                 }
 
                 @Override
@@ -201,32 +233,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolders> {
 
                 }
             });
-
-
-            //FIM TESTE
-           /* mDadosUsuarioTroca = FirebaseDatabase.getInstance().getReference().child("Usuarios").child(troca).child("urlFotoPerfil");
-            //DatabaseReference foto =mDadosUsuarioLogado.child("urlFotoPerfil");
-            mDadosUsuarioTroca.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.exists()){
-                        String url = dataSnapshot.getValue().toString();
-                        Glide.with(context).load(url).into(chatViewHolders.mImagemPerfil);
-                    }
-*/
-            chatViewHolders.mMensagemChatRecebido.setGravity(Gravity.START);
-
-            chatViewHolders.mMensagemChatRecebido.setTextColor(Color.parseColor("#000000"));
-            chatViewHolders.mChatContainerRecebido.setBackgroundColor(Color.parseColor("#FFF3E0"));
-
-            chatViewHolders.mChatContainerRecebido.setBackgroundResource(R.drawable.redondo);
-
-
         }
     }
 
+
     private void carregarFoto(String url, CircleImageView chatViewHolders) {
-        Glide.with(context).load(url).into(chatViewHolders);
+
+        Glide.with(context.getApplicationContext()).load(url).into(chatViewHolders);
     }
 
     @Override
@@ -236,4 +249,5 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatViewHolders> {
 
 
 }
+
 

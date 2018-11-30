@@ -1,9 +1,11 @@
 package com.jd.livrei0.TabAdapter;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 
 import com.jd.livrei0.Fragment.CadLivroTrocaFragment;
 import com.jd.livrei0.Fragment.LivrosFragment;
@@ -26,9 +28,16 @@ public class TabAdapter extends FragmentStatePagerAdapter {
         switch (position){
             case 0:
                 fragment = new LivrosFragment();
+
+
                 break;
             case 1:
+
                 fragment = new TrocasDisponiveisFragment();
+
+
+
+
                 break;
 
 
@@ -47,6 +56,8 @@ public class TabAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         return tituloAbas[position];
     }
+
+
 
 
 }

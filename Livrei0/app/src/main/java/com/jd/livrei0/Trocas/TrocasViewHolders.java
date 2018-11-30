@@ -42,4 +42,6 @@ public class TrocasViewHolders extends RecyclerView.ViewHolder implements View.O
         intent.putExtras(bundle);
         itemView.getContext().startActivity(intent);
     }
+
+
 }

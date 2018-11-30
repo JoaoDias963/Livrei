@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,9 @@ import com.jd.livrei0.Cards.CardAdapter;
 import com.jd.livrei0.Cards.arrayAdapter;
 import com.jd.livrei0.MainActivity;
 import com.jd.livrei0.R;
+import com.jd.livrei0.TabAdapter.TabAdapter;
+import com.jd.livrei0.Trocas.TrocasAdapter;
+import com.jd.livrei0.Utils.SlidingTabLayout;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -40,10 +45,13 @@ public class LivrosFragment extends Fragment {
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mUsuarioDb , mChatDb;
 
+private TrocasDisponiveisFragment trocas;
+
     ListView listView;
     List<CardAdapter> rowLivros;
 
     private String TrocaId;
+
 
     public LivrosFragment() {
         // Required empty public constructor
@@ -55,6 +63,8 @@ public class LivrosFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_livros, container, false);
+
+
 
         mUsuarioDb = FirebaseDatabase.getInstance().getReference().child("Usuarios");
         mChatDb = FirebaseDatabase.getInstance().getReference().child("Chat");
@@ -108,8 +118,10 @@ public class LivrosFragment extends Fragment {
                     //estrutura: "Usuarios" > "Interessa" >titulo > idUsuario Dono > id Usuario atual
                     mUsuarioDb.child(mFirebaseAuth.getCurrentUser().getUid()).child("Interessa").child(userId).child(titulo).setValue(true);
 
+
                     //testa se os dois usuarios tem interesse nos livros
                     testaSeTroca(userId);
+
                     Toast.makeText(getActivity(), "Este livro me interessou",Toast.LENGTH_SHORT).show();
                 }
 
@@ -126,12 +138,12 @@ public class LivrosFragment extends Fragment {
 
 
             // Optionally add an OnItemClickListener
-            flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
+           /* flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClicked(int itemPosition, Object dataObject) {
                     Toast.makeText(getActivity(), "Clique",Toast.LENGTH_SHORT).show();
                 }
-            });
+            });*/
 
 
 
@@ -140,12 +152,15 @@ public class LivrosFragment extends Fragment {
 
 
     private void testaSeTroca(final String userId) {
+
+
         //referência ao livro que apareceu na tela foi para o "Interessa"
         DatabaseReference interresseUsuarioAtual = mUsuarioDb.child(mFirebaseAuth.getCurrentUser().getUid()).child("Interessa").child(userId);
         interresseUsuarioAtual.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()){
+
                     //referencia o usuario recebido e coloca o usuario atual no Trocas
                     final DatabaseReference interesseUsuarioRecebido = mUsuarioDb.child(dataSnapshot.getKey()).child("Interessa").child(mFirebaseAuth.getCurrentUser().getUid());
                     interesseUsuarioRecebido.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -173,9 +188,21 @@ public class LivrosFragment extends Fragment {
                                 mUsuarioDb.child(userId).child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).child("ConfirmadoPeloUsuario").setValue(userId);
 
 
+
+
                                 Toast.makeText(getActivity(), "Você tem uma troca pendente", Toast.LENGTH_LONG).show();
+                                //////////////////////
+                               getActivity().recreate();
+
+
+
+                                /////////////////////////
+
                             }
                         }
+
+
+
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
 
@@ -200,11 +227,12 @@ public class LivrosFragment extends Fragment {
 
 
                 //se a chave usuario for diferente do logado && se usuario atual já não foi registrado no interessa ou nao interessa
-                if (dataSnapshot.exists() && dataSnapshot.child("Doacao").exists() && !dataSnapshot.getKey().equals(mFirebaseAuth.getCurrentUser().getUid() ) && (!dataSnapshot.child("NaoInteressa").hasChild(mFirebaseAuth.getCurrentUser().getUid()))) {
+                if (dataSnapshot.exists() && dataSnapshot.child("Doacao").exists() && !dataSnapshot.getKey().equals(mFirebaseAuth.getCurrentUser().getUid() ) /*&& (!dataSnapshot.child("NaoInteressa").hasChild(mFirebaseAuth.getCurrentUser().getUid()))*/) {
 
                     //testa se o livro n está em troca pendente
-                    if (!dataSnapshot.child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).exists() ) {
-
+                    //if (!dataSnapshot.child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).child("Status").equals("Troca realizada com sucesso") ) {
+//teste
+                    if(!dataSnapshot.child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).exists()){
                         //dataSnapshot.getKey() aqui acessa primeiro filho após "Usuarios" no banco trazendo o UId
                         //dataSnapshot.child("Doacao") acessa o valor de qualquer filho depois do UId com "Doacao"
                         //trocar "urlFotoPerfil" por "urlFotoLivro"
@@ -218,7 +246,21 @@ public class LivrosFragment extends Fragment {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                //se a chave usuario for diferente do logado && se usuario atual já não foi registrado no interessa ou nao interessa
+                if (dataSnapshot.exists() && dataSnapshot.child("Doacao").exists() && !dataSnapshot.getKey().equals(mFirebaseAuth.getCurrentUser().getUid() ) /*&& (!dataSnapshot.child("NaoInteressa").hasChild(mFirebaseAuth.getCurrentUser().getUid()))*/) {
 
+                    //testa se o livro n está em troca pendente
+                    if (!dataSnapshot.child("Trocas").child(mFirebaseAuth.getCurrentUser().getUid()).exists() ) {
+
+                        //dataSnapshot.getKey() aqui acessa primeiro filho após "Usuarios" no banco trazendo o UId
+                        //dataSnapshot.child("Doacao") acessa o valor de qualquer filho depois do UId com "Doacao"
+                        //trocar "urlFotoPerfil" por "urlFotoLivro"
+                        CardAdapter livro = new CardAdapter(dataSnapshot.getKey(), dataSnapshot.child("Doacao").child("titulo").getValue().toString(), dataSnapshot.child("Doacao").child("urlFotoDoacaoLivro").getValue().toString());
+                        rowLivros.add(livro);
+                        arrayAdapter.notifyDataSetChanged();
+                    }
+
+                }
             }
 
             @Override
@@ -242,6 +284,13 @@ public class LivrosFragment extends Fragment {
 
         });
     }
+
+    @Override
+    public void onAttachFragment(Fragment childFragment) {
+        trocas = (TrocasDisponiveisFragment) childFragment;
+        super.onAttachFragment(childFragment);
+    }
+
 
 
 }

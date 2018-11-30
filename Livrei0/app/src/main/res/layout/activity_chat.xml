@@ -81,6 +81,7 @@
             android:layout_height="wrap_content"
             android:hint="Mensagem..."
             android:id="@+id/mensagem"
+            android:inputType="text"
 
 
 
